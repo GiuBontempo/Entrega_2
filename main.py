@@ -1,8 +1,14 @@
 from classes import *
+from funcoes import *
 
-carro=onibus("carro")
+
+carro=Onibus("carro")
 cachoeira=Ponto("cachoeira")
-lagoa=Ponto("lagoa")
-carro.adicionar_parada(cachoeira)
-carro.adicionar_parada(lagoa)
-print (carro.rota)
+criar_ponto()
+criar_ponto()
+criar_onibus()
+adicionar_parada()
+adicionar_parada()
+ver_rota()
+troca()
+ver_rota()

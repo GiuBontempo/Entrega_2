@@ -39,10 +39,10 @@ class Onibus(dado):
         else: print(f"Essa parada já está na rota do ônibus")
 
     def adicionar_motorista(self, motorista = Motorista):
-        self.rota.append(motorista)
+        self.fiscal.append(motorista)
 
     def adicionar_fiscal(self, fiscal = Fiscal):
-        self.rota.append(fiscal)
+        self.fiscal.append(fiscal)
 
     def trocar_duas_paradas_de_lugar(self, primeira_parada, segunda_parada):
         while True:

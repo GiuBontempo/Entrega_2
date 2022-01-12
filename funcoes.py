@@ -1,7 +1,21 @@
 from classes import *
+from main import *
 def criar_onibus():
-    novo_onibus = input(f"Qual é o nome do ônibus?")
+    novo_onibus = input(f"Qual é o nome do ônibus?\
+                        \n")
+    novo_onibus_motorista = input(f"Quem será o motorista do ônibus\
+                                \n a lista atual de motoristas é {lista_motoristas}\
+                                \n")
     globals()[novo_onibus] = Onibus(novo_onibus)
+    lista_onibus.append(novo_onibus)
+    globals()[novo_onibus].fiscal = globals()[novo_onibus_fiscal]
+    quer = input(f"Quer adicionar fiscal?\
+                \n Se quer, digite: sim")
+    if quer == "sim":
+        novo_onibus_fiscal = input(f"Quem será o motorista do ônibus\
+                                \n a lista atual de motoristas é {fiscais}\
+                                \n")
+        globals()[novo_onibus].fiscal = globals()[novo_onibus_fiscal]
 
 def criar_ponto():
     novo_ponto = input(f"Qual é o nome do ponto?")

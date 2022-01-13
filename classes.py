@@ -15,19 +15,19 @@ class dado:
 class Ponto(dado):
     def __init__(self, nome):
         super().__init__(nome)
-        self.coberto = ""
+        self.coberto = "descoberto"
 
 
 class Motorista(dado):
     def __init__(self, nome):
         super().__init__(nome)
-        self.sexo = ""
+        self.sexo = "feminino"
 
 
 class Fiscal(dado):
     def __init__(self, nome):
         super().__init__(nome)
-        self.sexo = ""
+        self.sexo = "feminino"
 
 
 class Onibus(dado):

@@ -4,7 +4,9 @@ from classes import *
 lista_onibus = []
 lista_pontos = []
 lista_motoristas = []
+lista_motoristas_disponiveis = []
 lista_fiscais = []
+lista_fiscais_disponiveis = []
 
 Rodando = True
 acao = "menu"
@@ -12,43 +14,77 @@ acao = "menu"
 def criar_onibus():
     novo_onibus = input(f"Qual é o nome do ônibus?\
                         \n")
-    novo_onibus_motorista = input(f"Quem será o motorista do ônibus\
-                                \na lista atual de motoristas é {lista_motoristas}\
-                                \n")
-    globals()[novo_onibus] = Onibus(novo_onibus)
-    lista_onibus.append(globals()[novo_onibus])
-    globals()[novo_onibus].motorista = globals()[novo_onibus_motorista]
-    quer = input(f"Quer adicionar fiscal?\
-                \nSe quer, digite: sim\
-                \n")
-    if quer == "sim":
-        novo_onibus_fiscal = input(f"Quem será o fiscal do ônibus\
-                                \na lista atual de fiscais é {lista_fiscais}\
-                                \n")
-        globals()[novo_onibus].fiscal = globals()[novo_onibus_fiscal]
+    while True:
+        novo_onibus_motorista = input(f"Quem será o motorista do ônibus\
+                                    \na lista atual de motoristas disponiveis é {lista_motoristas_disponiveis}\
+                                    \n")
+        if globals()[novo_onibus_motorista] in lista_motoristas_disponiveis:
+            globals()[novo_onibus] = Onibus(novo_onibus)
+            lista_onibus.append(globals()[novo_onibus])
+            globals()[novo_onibus].motorista = globals()[novo_onibus_motorista]
+            lista_motoristas_disponiveis.remove(globals()[novo_onibus_motorista])
+            quer = input(f"Quer adicionar fiscal?\
+                        \nSe quer, digite: sim\
+                        \n")
+            if quer == "sim":
+                while True:
+                    novo_onibus_fiscal = input(f"Quem será o fiscal do ônibus\
+                                            \na lista atual de fiscais disponíveis é {lista_fiscais_disponiveis}\
+                                            \n")
+                    if globals()[novo_onibus_fiscal] in lista_fiscais_disponiveis:
+                        globals()[novo_onibus].fiscal = globals()[novo_onibus_fiscal]
+                        lista_fiscais_disponiveis.remove(globals()[novo_onibus_fiscal])
+                        break
+                    else: print("Esse não é um fiscal disponível, tente novamente!")
+                break
+            break
+        else:
+            print("Esse não é um motorista disponível, tente novamente! (Todo ônibus precisa de um motorista)")
 
 def criar_ponto():
     novo_ponto = input(f"Qual é o nome do ponto?\
                         \n")
     globals()[novo_ponto] = Ponto(novo_ponto)
     lista_pontos.append(globals()[novo_ponto])
+    coberto = input(f"Se esse novo ponto é coberto, digite: sim\
+            \n")
+    if coberto == "sim":
+        globals()[novo_ponto].coberto = "coberto"
 
 def criar_motorista():
-    novo_motorista = input(f"Qual é o nome do motorista?")
+    novo_motorista = input(f"Qual é o nome do motorista?\
+                            \n")
     globals()[novo_motorista] = Motorista(novo_motorista)
     lista_motoristas.append(globals()[novo_motorista])
+    lista_motoristas_disponiveis.append(globals()[novo_motorista])
+    sexo = input(f"Se esse novo motorista é do sexo masculino, digite: sim\
+            \n")
+    if sexo == "sim":
+        globals()[novo_motorista].sexo = "masculino"
 
 def criar_fiscal():
     novo_fiscal = input(f"Qual é o nome do fiscal?\
                         \n")
     globals()[novo_fiscal] = Fiscal(novo_fiscal)
     lista_fiscais.append(globals()[novo_fiscal])
+    lista_fiscais_disponiveis.append(globals()[novo_fiscal])
+    sexo = input(f"Se esse novo fiscal é do sexo masculino, digite: sim\
+            \n")
+    if sexo == "sim":
+        globals()[novo_fiscal].sexo = "masculino"
 
 def adicionar_parada(objeto_em_questao):
     print(f"\
-           \nA atual lista de pontos é: {lista_pontos}")
-    objeto_em_questao.adicionar_parada(globals()[input(f"Qual o nome da parada?\
-                                                        \n")])
+           \nA atual lista de pontos é: {lista_pontos}\
+           \nE a atual rota de {objeto_em_questao} é {objeto_em_questao.rota}")
+    while True:
+        p = globals()[input(f"Qual o nome da parada?\
+                            \n")]
+        if not p in objeto_em_questao.rota:
+            objeto_em_questao.adicionar_parada(p)
+            break
+        else:
+            print(f"O ponto {p} já está na rota do ônibus {objeto_em_questao}, tente novamente!")
 
 def ver_rota():
     onibus_em_questao = input(f"Digite o nome do ônibus do qual você quer ver a rota: ")
@@ -122,11 +158,38 @@ while Rodando:
                          \n a atual rota é: {objeto_em_questao.rota}")
                       objeto_em_questao.trocar_duas_paradas_de_lugar(globals()[input("Escolha a primeira parada para trocar de lugar: ")], globals()[input("Escolha a segunda parada para trocar de lugar: ")])
                  elif acao == "alterar_motorista":
-                     print(f"A lista de motoristas é {lista_motoristas}")
-                     objeto_em_questao.motorista = globals()[input("Qual deve ser o novo motorista? ")]
+                     while True:
+                        print(f"A lista de motoristas disponíveis é {lista_motoristas_disponiveis}")
+                        novo = globals()[input("Qual deve ser o novo motorista? ")]
+                        if novo in lista_motoristas_disponiveis:
+                            lista_motoristas_disponiveis.remove(novo)
+                            lista_motoristas_disponiveis.append(objeto_em_questao.motorista)
+                            objeto_em_questao.motorista = novo
+                            break
+                        else:
+                            print("Esse não é um fiscal disponível!")
                  elif acao == "alterar_fiscal":
-                     print(f"A lista de fiscais é {lista_fiscais}")
-                     objeto_em_questao.motorista = globals()[input("Qual deve ser o novo fiscal? ")]
+                     if objeto_em_questao.fiscal == "":
+                         while True:
+                            print(f"A lista de fiscais disponíveis é {lista_fiscais_disponiveis}")
+                            novo = globals()[input("Qual deve ser o novo fiscal? ")]
+                            if novo in lista_fiscais_disponiveis:
+                                lista_fiscais_disponiveis.remove(novo)
+                                objeto_em_questao.fiscal = novo
+                                break
+                            else:
+                                print("Esse não é um fiscal disponível!")
+                     else:
+                          while True:
+                            print(f"A lista de fiscais disponíveis é {lista_fiscais_disponiveis}")
+                            novo = globals()[input("Qual deve ser o novo fiscal? ")]
+                            if novo in lista_fiscais_disponiveis:
+                                lista_fiscais_disponiveis.remove(novo)
+                                lista_fiscais_disponiveis.append(objeto_em_questao.fiscal)
+                                objeto_em_questao.fiscal = novo
+                                break
+                            else:
+                                print("Esse não é um fiscal disponível!")
                  elif acao == "ver":
                      print(f"O ônibus {objeto_em_questao} possui a rota: {objeto_em_questao.rota}, é dirigido por motorista {objeto_em_questao.motorista}, e tem como fiscal {objeto_em_questao.fiscal}. Sua tarifa é de {len(objeto_em_questao.rota) * 0.2} reais")
                         
@@ -155,6 +218,10 @@ while Rodando:
                 if acao == "deletar":
                         objeto.deletar()
                         lista_pontos.remove(objeto)
+                if acao == "alterar":
+                    objeto.coberto = input("Digite coberto caso o ponto seja coberto, ou descoberto caso o ponto seja descoberto: ")
+                if acao == "ver":
+                    print(f"O ponto {objeto} é {objeto.coberto}")
 
                         
     elif acao == "3":
@@ -181,6 +248,12 @@ while Rodando:
                 if acao == "deletar":
                         objeto.deletar()
                         lista_motoristas.remove(objeto)
+                        lista_motoristas_disponiveis.remove(objeto)
+                if acao == "alterar":
+                    objeto.sexo = input("Digite o sexo do motorista: ")
+                if acao == "ver":
+                    print(f"{objeto} é do sexo {objeto.sexo}")
+
 
 
     elif acao == "4":
@@ -207,4 +280,9 @@ while Rodando:
                 if acao == "deletar":
                         objeto_em_questao.deletar()
                         lista_fiscais.remove(objeto)
+                        lista_fiscais_disponiveis.remove(objeto)
+                if acao == "alterar":
+                    objeto.sexo = input("Digite o sexo do fiscal: ")
+                if acao == "ver":
+                    print(f"{objeto} é do sexo {objeto.sexo}")
     acao = "menu"
